@@ -2,9 +2,20 @@ import EditorMenu from './EditorMenu'
 import EditorContent from './EditorContent'
 import { useCallback, useState } from 'react'
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
+import { connect } from 'react-redux'
+import { RootDispatch, RootState } from '@/store/store'
 import styles from './editor.module.less'
 
-export default function Editor() {
+type EditorProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
+
+const reorder = (list: any[], startIndex: number, endIndex: number) => {
+  const res = Array.from(list)
+  const [removed] = res.splice(startIndex, 1)
+  res.splice(endIndex, 0, removed)
+  return res
+}
+
+function Editor({ swimLanes }: EditorProps) {
   const [mockList, setMockList] = useState([
     {
       id: '1',
@@ -66,3 +77,11 @@ export default function Editor() {
     </div>
   )
 }
+
+const mapStateToProps = (state: RootState) => ({
+  swimLanes: state.swimLanes,
+})
+
+const mapDispatchToProps = (dispatch: RootDispatch) => ({})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Editor)
