@@ -22,12 +22,12 @@ export default class EditorContent extends PureComponent<IProps, IState> {
           <Droppable droppableId={droppableIdMap[CONTENT]}>
             {
               (provided, snapshot) => (
-                <div ref={provided.innerRef}>
+                <div ref={provided.innerRef} className={styles.wrapper}>
                   {
                     list.map((l, index) => (
                       <Draggable
                         key={l.id}
-                        draggableId={l.id}
+                        draggableId={`CONTENT-${l.id}`}
                         index={index}
                       >
                         {

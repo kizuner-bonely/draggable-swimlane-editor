@@ -1,53 +1,46 @@
-import droppableIdMap, {MENU} from './config'
-import {Draggable, Droppable} from 'react-beautiful-dnd'
+import droppableIdMap, { MENU } from './config'
+import { Draggable, Droppable } from 'react-beautiful-dnd'
 import styles from './editor.module.less'
-import { useMemo } from 'react'
 
-export default function EditorMenu() {
-  const mockMenu = useMemo(() => ([
-    {
-      id: '1',
-      content: 'item A'
-    },
-    {
-      id: '2',
-      content: 'item B'
-    },
-  ]), [])
+interface IProps {
+  mockMenu: Array<{ id: string; content: string; }>
+}
+
+export default function EditorMenu({ mockMenu }: IProps) {
   
   return (
-    <Droppable droppableId={droppableIdMap[MENU]}>
-      {
-        ((provided, snapshot) => (
-          <div
-            ref={provided.innerRef}
-            className={styles['editor-menu']}
-          >
-            {
-              mockMenu.map((m, index) => (
-                <Draggable
-                  key={m.id}
-                  draggableId={m.id}
-                  index={index}
-                >
-                  {
-                    (provide, snapshot) => (
-                      <div
-                        ref={provide.innerRef}
-                        {...provide.draggableProps}
-                        {...provide.dragHandleProps}
-                        className={styles['menu-item']}
-                      >
-                        {m.content}
-                      </div>
-                    )
-                  }
-                </Draggable>
-              ))
-            }
-          </div>
-        ))
-      }
-    </Droppable>
+    <div className={styles['editor-menu']}>
+      <Droppable droppableId={droppableIdMap[MENU]}>
+        {
+          ((provided, snapshot) => (
+            <div ref={provided.innerRef} className={styles.wrapper}>
+              {
+                mockMenu.map((m, index) => (
+                  <Draggable
+                    key={m.id}
+                    draggableId={`MENU-${m.id}`}
+                    index={index}
+                  >
+                    {
+                      (provide, snapshot) => (
+                        <div
+                          ref={provide.innerRef}
+                          {...provide.draggableProps}
+                          {...provide.dragHandleProps}
+                          className={styles['menu-item']}
+                        >
+                          {m.content}
+                        </div>
+                      )
+                    }
+                  </Draggable>
+                ))
+              }
+              {provided.placeholder}
+            </div>
+          ))
+        }
+      </Droppable>
+    </div>
   )
 }
