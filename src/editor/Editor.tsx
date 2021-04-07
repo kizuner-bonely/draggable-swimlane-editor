@@ -1,6 +1,5 @@
 import type { MenuProps } from './EditorMenu'
 import EditorMenu from './EditorMenu'
-import type { ListsProps } from './EditorContent'
 import EditorContent from './EditorContent'
 import { useCallback, useState } from 'react'
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
@@ -17,18 +16,7 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
   return res
 }
 
-function Editor({ swimLanes, menu }: EditorProps) {
-  const [mockMenu] = useState([
-    {
-      id: '1',
-      content: 'item A',
-    },
-    {
-      id: '2',
-      content: 'item B',
-    },
-  ])
-  
+function Editor({ swimLanes, menu, addList, removeList }: EditorProps) {
   /*
   * result 结构
   *   combine: null;
@@ -64,7 +52,7 @@ function Editor({ swimLanes, menu }: EditorProps) {
     <div className={styles.editor}>
       <DragDropContext onDragEnd={onDragEnd}>
         <EditorMenu menu={menu as MenuProps[]}/>
-        <EditorContent lists={swimLanes as ListsProps}/>
+        <EditorContent lists={swimLanes as any} addList={addList} removeList={removeList}/>
       </DragDropContext>
     </div>
   )
@@ -75,6 +63,9 @@ const mapStateToProps = (state: RootState) => ({
   menu: state.menu,
 })
 
-const mapDispatchToProps = (dispatch: RootDispatch) => ({})
+const mapDispatchToProps = (dispatch: RootDispatch) => ({
+  addList: dispatch.swimLanes.add,
+  removeList: dispatch.swimLanes.remove,
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(Editor)

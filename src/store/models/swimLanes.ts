@@ -23,16 +23,24 @@ const model = {
       contents: [
         {
           id: '1',
-          content: 'testA'
+          content: 'testA',
         },
         {
           id: '2',
-          content: 'testB'
+          content: 'testB',
         },
-      ]
-    }
+      ],
+    },
   ] as swimLanesType[],
-  reducers: {},
+  reducers: {
+    add(state: swimLanesType[], list: swimLanesType) {
+      return [...state, list]
+    },
+    remove(state: swimLanesType[], title: string) {
+      const _state = Array.from(state)
+      return _state.filter(v => v.title !== title)
+    },
+  },
   effects: {},
 }
 
