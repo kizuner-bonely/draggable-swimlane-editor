@@ -1,4 +1,5 @@
 import EditorMenu from './EditorMenu'
+import type { ListsProps } from './EditorContent'
 import EditorContent from './EditorContent'
 import { useCallback, useState } from 'react'
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
@@ -16,16 +17,6 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
 }
 
 function Editor({ swimLanes }: EditorProps) {
-  const [mockList, setMockList] = useState([
-    {
-      id: '1',
-      content: 'aaa',
-    },
-    {
-      id: '2',
-      content: 'bbb',
-    },
-  ])
   const [mockMenu] = useState([
     {
       id: '1',
@@ -72,7 +63,7 @@ function Editor({ swimLanes }: EditorProps) {
     <div className={styles.editor}>
       <DragDropContext onDragEnd={onDragEnd}>
         <EditorMenu mockMenu={mockMenu}/>
-        <EditorContent list={mockList}/>
+        <EditorContent lists={swimLanes as ListsProps}/>
       </DragDropContext>
     </div>
   )

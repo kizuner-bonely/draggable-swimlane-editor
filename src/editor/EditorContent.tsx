@@ -1,10 +1,12 @@
 import { PureComponent } from 'react'
+import { Button } from 'antd'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
-import droppableIdMap, { CONTENT } from './config'
 import styles from './editor.module.less'
 
+export type ListsProps = Array<{ title: string; contents: Array<{ id: string; content: string; }>; }>;
+
 interface IProps {
-  list: Array<{ id: string; content: string; }>
+  lists: ListsProps;
 }
 
 interface IState {
@@ -12,43 +14,52 @@ interface IState {
 
 export default class EditorContent extends PureComponent<IProps, IState> {
   render() {
-    const { list } = this.props
+    const { lists } = this.props
     return (
       <div className={styles['editor-content']}>
-        <div className={styles.list}>
-          <p className={styles.title}>
-            test
-          </p>
-          <Droppable droppableId={droppableIdMap[CONTENT]}>
-            {
-              (provided, snapshot) => (
-                <div ref={provided.innerRef} className={styles.wrapper}>
+        <Button type={'primary'} style={{ alignSelf: 'start' }}>添加泳道</Button>
+        <div className={styles.lists}>
+          {
+            lists.map(l => (
+              <div
+                key={l.title}
+                className={styles.list}
+              >
+                <p className={styles.title}>{l.title}</p>
+                <Droppable droppableId={l.title}>
                   {
-                    list.map((l, index) => (
-                      <Draggable
-                        key={l.id}
-                        draggableId={`CONTENT-${l.id}`}
-                        index={index}
-                      >
+                    (provided, snapshot) => (
+                      <div ref={provided.innerRef}>
                         {
-                          (provided, snapshot) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              className={styles.nodes}
+                          l.contents.map((item, index) => (
+                            <Draggable
+                              key={item.id}
+                              draggableId={`${l.title}-${item.id}`}
+                              index={index}
                             >
-                              {l.content}
-                            </div>
-                          )
+                              {
+                                (provided, snapshot) => (
+                                  <div
+                                    className={styles.nodes}
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                  >
+                                    {item.content}
+                                  </div>
+                                )
+                              }
+                            </Draggable>
+                          ))
                         }
-                      </Draggable>
-                    ))
+                        {provided.placeholder}
+                      </div>
+                    )
                   }
-                </div>
-              )
-            }
-          </Droppable>
+                </Droppable>
+              </div>
+            ))
+          }
         </div>
       </div>
     )
