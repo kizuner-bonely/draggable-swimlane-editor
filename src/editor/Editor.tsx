@@ -1,3 +1,4 @@
+import type { MenuProps } from './EditorMenu'
 import EditorMenu from './EditorMenu'
 import type { ListsProps } from './EditorContent'
 import EditorContent from './EditorContent'
@@ -16,7 +17,7 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
   return res
 }
 
-function Editor({ swimLanes }: EditorProps) {
+function Editor({ swimLanes, menu }: EditorProps) {
   const [mockMenu] = useState([
     {
       id: '1',
@@ -62,7 +63,7 @@ function Editor({ swimLanes }: EditorProps) {
   return (
     <div className={styles.editor}>
       <DragDropContext onDragEnd={onDragEnd}>
-        <EditorMenu mockMenu={mockMenu}/>
+        <EditorMenu menu={menu as MenuProps[]}/>
         <EditorContent lists={swimLanes as ListsProps}/>
       </DragDropContext>
     </div>
@@ -71,6 +72,7 @@ function Editor({ swimLanes }: EditorProps) {
 
 const mapStateToProps = (state: RootState) => ({
   swimLanes: state.swimLanes,
+  menu: state.menu,
 })
 
 const mapDispatchToProps = (dispatch: RootDispatch) => ({})

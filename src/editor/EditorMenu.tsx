@@ -2,11 +2,13 @@ import droppableIdMap, { MENU } from './config'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
 import styles from './editor.module.less'
 
+export type MenuProps = { id: string; content: string; }
+
 interface IProps {
-  mockMenu: Array<{ id: string; content: string; }>
+  menu: Array<MenuProps>
 }
 
-export default function EditorMenu({ mockMenu }: IProps) {
+export default function EditorMenu({ menu }: IProps) {
   
   return (
     <div className={styles['editor-menu']}>
@@ -15,7 +17,7 @@ export default function EditorMenu({ mockMenu }: IProps) {
           ((provided, snapshot) => (
             <div ref={provided.innerRef} className={styles.wrapper}>
               {
-                mockMenu.map((m, index) => (
+                menu.map((m, index) => (
                   <Draggable
                     key={m.id}
                     draggableId={`MENU-${m.id}`}
