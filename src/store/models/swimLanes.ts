@@ -37,8 +37,13 @@ const model = {
       return [...state, list]
     },
     remove(state: swimLanesType[], title: string) {
-      const _state = Array.from(state)
-      return _state.filter(v => v.title !== title)
+      return Array.from(state).filter(v => v.title !== title)
+    },
+    update(state: swimLanesType[], newList: swimLanesType) {
+      return Array.from(state).map(v => {
+        if (v.title === newList.title) return newList
+        return v
+      })
     },
   },
   effects: {},

@@ -1,4 +1,3 @@
-import droppableIdMap, { MENU } from './config'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
 import styles from './editor.module.less'
 
@@ -13,7 +12,7 @@ export default function EditorMenu({ menu }: IProps) {
   return (
     <div className={styles['editor-menu']}>
       <Droppable
-        droppableId={droppableIdMap[MENU]}
+        droppableId={'menu'}
         type={'done'}
         isDropDisabled={true}
       >
