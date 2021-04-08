@@ -68,8 +68,8 @@ export default class EditorContent extends PureComponent<IProps, IState> {
                           {
                             l.contents.map((item, index) => (
                               <Draggable
-                                key={item.id}
-                                draggableId={`${l.title}-${item.id}`}
+                                key={`${l.title}-${item.id}-${index}`}
+                                draggableId={`${l.title}-${item.id + index}`}
                                 index={index}
                               >
                                 {
