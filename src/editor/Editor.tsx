@@ -54,7 +54,6 @@ function Editor({ swimLanes, menu, addList, removeList, updateList }: EditorProp
   *   };
   * */
   const onDragEnd = useCallback((result: DropResult) => {
-    console.log(result)
     const { source, destination } = result
     //* 将可拖拽的组件拉到可拖拽区域以外的地方或者菜单栏时动作无效
     if (!destination || destination.droppableId === 'menu') return
