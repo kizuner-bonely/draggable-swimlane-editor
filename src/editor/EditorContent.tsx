@@ -97,9 +97,17 @@ export default class EditorContent extends PureComponent<IProps, IState> {
             }
           </div>
         </div>
-        <FormModal visible={visible} toggleModal={this.toggleModal} addList={addList}/>
-        <RemoveModal visible={removeModalVisible} title={title} removeList={removeList}
-                     toggleModal={this.toggleRemoveModal}/>
+        <FormModal
+          visible={visible}
+          toggleModal={this.toggleModal}
+          addList={addList}
+        />
+        <RemoveModal
+          visible={removeModalVisible}
+          title={title}
+          removeList={removeList}
+          toggleModal={this.toggleRemoveModal}
+        />
       </>
     )
   }

@@ -12,7 +12,11 @@ export default function EditorMenu({ menu }: IProps) {
   
   return (
     <div className={styles['editor-menu']}>
-      <Droppable droppableId={droppableIdMap[MENU]}>
+      <Droppable
+        droppableId={droppableIdMap[MENU]}
+        type={'done'}
+        isDropDisabled={true}
+      >
         {
           ((provided, snapshot) => (
             <div ref={provided.innerRef} className={styles.wrapper}>
