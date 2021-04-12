@@ -45,11 +45,11 @@ export default class EditorContent extends PureComponent<IProps, IState> {
     return (
       <>
         <div className={styles['editor-content']}>
-          <Button
-            type={'primary'}
-            style={{ alignSelf: 'start' }}
-            onClick={this.toggleModal}
-          >添加泳道</Button>
+          {/*<Button*/}
+          {/*  type={'primary'}*/}
+          {/*  style={{ alignSelf: 'start' }}*/}
+          {/*  onClick={this.toggleModal}*/}
+          {/*>添加泳道</Button>*/}
           <div className={styles.lists}>
             {
               lists.map(l => (
