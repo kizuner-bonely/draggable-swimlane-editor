@@ -17,22 +17,14 @@ interface IProps {
 }
 
 interface IState {
-  visible: boolean
   removeModalVisible: boolean
   title: string
 }
 
 export default class EditorContent extends PureComponent<IProps, IState> {
   state = {
-    visible: false,
     removeModalVisible: false,
     title: '',
-  }
-
-  toggleModal = () => {
-    this.setState((preState) => ({
-      visible: !preState.visible,
-    }))
   }
 
   toggleRemoveModal = (title?: string) => {
@@ -43,8 +35,8 @@ export default class EditorContent extends PureComponent<IProps, IState> {
   }
 
   render() {
-    const { visible, removeModalVisible, title } = this.state
-    const { lists, addList, removeList } = this.props
+    const { removeModalVisible, title } = this.state
+    const { lists, removeList } = this.props
 
     return (
       <>
