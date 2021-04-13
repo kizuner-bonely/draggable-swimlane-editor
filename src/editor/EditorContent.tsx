@@ -1,7 +1,7 @@
 import { PureComponent, useCallback } from 'react'
-import { Form, Input, Modal } from 'antd'
-import { Draggable, Droppable } from 'react-beautiful-dnd'
+import { Modal, Form, Input } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
+import { Droppable, Draggable } from 'react-beautiful-dnd'
 import styles from './editor.module.less'
 
 type listType = {
@@ -43,8 +43,9 @@ export default class EditorContent extends PureComponent<IProps, IState> {
   }
 
   render() {
-    const { lists, addList, removeList } = this.props
     const { visible, removeModalVisible, title } = this.state
+    const { lists, addList, removeList } = this.props
+
     return (
       <>
         <div className={styles['editor-content']}>
@@ -75,8 +76,8 @@ export default class EditorContent extends PureComponent<IProps, IState> {
                             <div
                               className={styles.nodes}
                               ref={provided.innerRef}
-                              {...provided.draggableProps}
                               {...provided.dragHandleProps}
+                              {...provided.draggableProps}
                             >
                               {item.content}
                             </div>

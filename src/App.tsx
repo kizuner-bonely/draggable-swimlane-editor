@@ -1,11 +1,9 @@
-import Editor from '@/editor/Editor'
-import MxgraphDemo from '@/editor/mxgraph/MxgraphDemo'
+import Editor from './editor/Editor'
 
 function App() {
   return (
     <div className="App">
-      {/*<Editor/>*/}
-      <MxgraphDemo />
+      <Editor />
     </div>
   )
 }
