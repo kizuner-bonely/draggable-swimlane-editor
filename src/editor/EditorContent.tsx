@@ -1,5 +1,5 @@
-import { PureComponent, useCallback } from 'react'
-import { Modal, Form, Input } from 'antd'
+import { PureComponent } from 'react'
+import { Modal } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
 import { Droppable, Draggable } from 'react-beautiful-dnd'
 import styles from './editor.module.less'
@@ -92,11 +92,6 @@ export default class EditorContent extends PureComponent<IProps, IState> {
             ))}
           </div>
         </div>
-        <FormModal
-          visible={visible}
-          toggleModal={this.toggleModal}
-          addList={addList}
-        />
         <RemoveModal
           visible={removeModalVisible}
           title={title}
@@ -133,44 +128,6 @@ function RemoveModal({
       onCancel={toggleModal}
     >
       确认删除泳道"{title}"吗
-    </Modal>
-  )
-}
-
-interface FormModalProps {
-  visible: boolean
-  toggleModal: () => void
-  addList: (list: listType) => { [key: string]: any }
-}
-
-function FormModal({ visible, toggleModal, addList }: FormModalProps) {
-  const [form] = Form.useForm()
-
-  const handleAddList = useCallback(() => {
-    const { title } = form.getFieldsValue()
-    addList({ title, contents: [] })
-    toggleModal()
-    form.resetFields()
-  }, [form, addList, toggleModal])
-
-  return (
-    <Modal
-      visible={visible}
-      title={'添加泳道'}
-      onOk={handleAddList}
-      onCancel={toggleModal}
-      okText={'添加'}
-      cancelText={'取消'}
-    >
-      <Form form={form} onFinish={handleAddList}>
-        <Form.Item
-          name={'title'}
-          label={'泳道名'}
-          rules={[{ required: true, message: '必须填写泳道名' }]}
-        >
-          <Input placeholder={'泳道名'} />
-        </Form.Item>
-      </Form>
     </Modal>
   )
 }
