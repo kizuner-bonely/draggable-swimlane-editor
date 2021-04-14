@@ -6,7 +6,7 @@ import styles from './editor.module.less'
 
 type listType = {
   title: string
-  contents: Array<{ id: string; content: string }>
+  contents: Array<{ id: string; uid: number; content: string }>
 }
 export type ListsProps = Array<listType>
 

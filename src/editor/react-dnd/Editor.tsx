@@ -17,6 +17,7 @@ interface SwimLaneType {
 
 interface SwimLaneContentType {
   id: string
+  uid: number
   content: string
 }
 

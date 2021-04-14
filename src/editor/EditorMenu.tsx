@@ -4,6 +4,7 @@ import styles from './editor.module.less'
 
 export interface MenuProps {
   id: string
+  uid: number
   content: string
 }
 
@@ -28,6 +29,7 @@ export default class EditorMenu extends PureComponent<IProps> {
                   {(provided, snapshot) => (
                     <div
                       ref={provided.innerRef}
+                      id={`${m.uid}`}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                       className={styles['menu-item']}

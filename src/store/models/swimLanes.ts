@@ -1,6 +1,12 @@
-interface swimLanesType {
-  title: string;
-  contents: Array<{ id: string; content: string; }>;
+export interface SwimLaneContent {
+  id: string
+  uid: number
+  content: string
+}
+
+interface SwimLaneType {
+  title: string
+  contents: SwimLaneContent[]
 }
 
 const model = {
@@ -10,10 +16,12 @@ const model = {
       contents: [
         {
           id: '1',
+          uid: 1618386001344,
           content: 'aaa',
         },
         {
           id: '2',
+          uid: 1618386001345,
           content: 'bbb',
         },
       ],
@@ -23,24 +31,26 @@ const model = {
       contents: [
         {
           id: '1',
+          uid: 1618386001346,
           content: 'testA',
         },
         {
           id: '2',
+          uid: 1618386001347,
           content: 'testB',
         },
       ],
     },
-  ] as swimLanesType[],
+  ] as SwimLaneType[],
   reducers: {
-    add(state: swimLanesType[], list: swimLanesType) {
+    add(state: SwimLaneType[], list: SwimLaneType) {
       return [...state, list]
     },
-    remove(state: swimLanesType[], title: string) {
-      return [...state].filter(v => v.title !== title)
+    remove(state: SwimLaneType[], title: string) {
+      return [...state].filter((v) => v.title !== title)
     },
-    update(state: swimLanesType[], newList: swimLanesType) {
-      return [...state].map(v => {
+    update(state: SwimLaneType[], newList: SwimLaneType) {
+      return [...state].map((v) => {
         if (v.title === newList.title) return newList
         return v
       })

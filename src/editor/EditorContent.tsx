@@ -6,13 +6,12 @@ import styles from './editor.module.less'
 
 type listType = {
   title: string
-  contents: Array<{ id: string; content: string }>
+  contents: Array<{ id: string; uid: number; content: string }>
 }
 export type ListsProps = Array<listType>
 
 interface IProps {
   lists: ListsProps
-  addList: (list: listType) => { [key: string]: any }
   removeList: (title: string) => void
 }
 
@@ -66,6 +65,7 @@ export default class EditorContent extends PureComponent<IProps, IState> {
                         >
                           {(provided, snapshot) => (
                             <div
+                              id={`${item.uid}`}
                               className={styles.nodes}
                               ref={provided.innerRef}
                               {...provided.dragHandleProps}

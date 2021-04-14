@@ -2,18 +2,15 @@ import { PureComponent } from 'react'
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
 import { connect } from 'react-redux'
 import { RootDispatch, RootState } from '@/store/store'
+import { SwimLaneContent } from '@/store/models/swimLanes'
 import styles from './editor.module.less'
 import EditorMenu, { MenuProps } from './EditorMenu'
 import EditorContent from './EditorContent'
+import common from './config'
 import 'jsplumb'
 
 type EditorProps = ReturnType<typeof mapStateToProps> &
   ReturnType<typeof mapDispatchToProps>
-
-interface SwimLaneContentType {
-  id: string
-  content: string
-}
 
 interface SwimLaneType {
   droppableId: string
@@ -22,11 +19,11 @@ interface SwimLaneType {
 
 //* 重置列表元素顺序
 const reorder = (
-  list: SwimLaneContentType[],
+  list: SwimLaneContent[],
   startIndex: number,
   endIndex: number,
-) => {
-  const res = Array.from(list)
+): SwimLaneContent[] => {
+  const res = [...list]
   const [removed] = res.splice(startIndex, 1)
   res.splice(endIndex, 0, removed)
   return res
@@ -34,8 +31,8 @@ const reorder = (
 
 //* 复制元素到另一表中
 const copy = (
-  source: SwimLaneContentType[],
-  destination: SwimLaneContentType[],
+  source: SwimLaneContent[],
+  destination: SwimLaneContent[],
   droppableSource: SwimLaneType,
   droppableDestination: SwimLaneType,
 ) => {
@@ -49,8 +46,8 @@ const copy = (
 
 //* 将元素移到另一列表中
 const move = (
-  source: SwimLaneContentType[],
-  destination: SwimLaneContentType[],
+  source: SwimLaneContent[],
+  destination: SwimLaneContent[],
   droppableSource: SwimLaneType,
   droppableDestination: SwimLaneType,
 ) => {
@@ -104,18 +101,38 @@ class Editor extends PureComponent<EditorProps> {
     }
   }
 
+  componentDidMount() {
+    const { swimLanes } = this.props
+    // console.log('swimLanes', swimLanes)
+    // @ts-ignore
+    jsPlumb.ready(function () {
+      if (Array.isArray(swimLanes)) {
+        swimLanes.forEach((s) => {
+          if (Array.isArray(s.contents)) {
+            s.contents.forEach((c: SwimLaneContent) => {
+              // @ts-ignore
+              jsPlumb.addEndpoint(`${c.uid}`, { anchors: ['Right'] }, common)
+              // @ts-ignore
+              jsPlumb.addEndpoint(`${c.uid}`, { anchors: ['Left'] }, common)
+              // @ts-ignore
+              jsPlumb.addEndpoint(`${c.uid}`, { anchors: ['Top'] }, common)
+              // @ts-ignore
+              jsPlumb.addEndpoint(`${c.uid}`, { anchors: ['Bottom'] }, common)
+            })
+          }
+        })
+      }
+    })
+  }
+
   render() {
-    const { menu, swimLanes, addList, removeList } = this.props
+    const { menu, swimLanes, removeList } = this.props
 
     return (
       <div className={styles.editor}>
         <DragDropContext onDragEnd={this.onDragEnd}>
           <EditorMenu menu={menu as MenuProps[]} />
-          <EditorContent
-            lists={swimLanes as any}
-            addList={addList}
-            removeList={removeList}
-          />
+          <EditorContent lists={swimLanes as any} removeList={removeList} />
         </DragDropContext>
       </div>
     )
@@ -128,7 +145,6 @@ const mapStateToProps = (state: RootState) => ({
 })
 
 const mapDispatchToProps = (dispatch: RootDispatch) => ({
-  addList: dispatch.swimLanes.add,
   removeList: dispatch.swimLanes.remove,
   updateList: dispatch.swimLanes.update,
 })

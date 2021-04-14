@@ -1,17 +1,20 @@
 interface MenusType {
-  id: string;
-  content: string;
+  id: string
+  uid: number
+  content: string
 }
 
 const model = {
   state: [
     {
       id: '1',
-      content: 'menuItem A'
+      uid: 1618385128014,
+      content: 'menuItem A',
     },
     {
       id: '2',
-      content: 'menuItem B'
+      uid: 1618385128015,
+      content: 'menuItem B',
     },
   ] as Array<MenusType>,
   reducers: {},
