@@ -39,8 +39,9 @@ const copy = (
   const sourceClone = [...source]
   const destClone = [...destination]
   const item = sourceClone[droppableSource.index]
-
-  destClone.splice(droppableDestination.index, 0, { ...item })
+  const newItem = Object.assign({}, item)
+  newItem.uid = new Date().getTime()
+  destClone.splice(droppableDestination.index, 0, newItem)
   return destClone
 }
 
@@ -59,6 +60,8 @@ const move = (
 }
 
 class Editor extends PureComponent<EditorProps> {
+  jsPlumb: any
+
   onDragEnd = (result: DropResult) => {
     const { source, destination } = result
     const { swimLanes, updateList, menu } = this.props
@@ -73,6 +76,7 @@ class Editor extends PureComponent<EditorProps> {
       const newList = reorder(list.contents, source.index, destination.index)
       updateList({ title: destination.droppableId, contents: newList })
     } else if (source.droppableId === 'menu') {
+      //* 从菜单栏拖出元素
       const swimLanesClone = JSON.parse(JSON.stringify(swimLanes))
       const destinationClone = copy(
         menu as any,
@@ -104,36 +108,42 @@ class Editor extends PureComponent<EditorProps> {
   connectToJsPlumb = (list: SwimLaneContent[]) => {
     list.forEach((i) => {
       //todo 这里应该根据节点类型添加连接点
-      // @ts-ignore
-      jsPlumb.addEndpoint(`${i.uid}`, { anchors: ['Right'] }, common)
-      // @ts-ignore
-      jsPlumb.addEndpoint(`${i.uid}`, { anchors: ['Left'] }, common)
-      // @ts-ignore
-      jsPlumb.addEndpoint(`${i.uid}`, { anchors: ['Top'] }, common)
-      // @ts-ignore
-      jsPlumb.addEndpoint(`${i.uid}`, { anchors: ['Bottom'] }, common)
+      this.jsPlumb.addEndpoint(`${i.uid}`, { anchors: ['Right'] }, common)
+      this.jsPlumb.addEndpoint(`${i.uid}`, { anchors: ['Left'] }, common)
+      this.jsPlumb.addEndpoint(`${i.uid}`, { anchors: ['Top'] }, common)
+      this.jsPlumb.addEndpoint(`${i.uid}`, { anchors: ['Bottom'] }, common)
+    })
+  }
+
+  initSwimLanes = (
+    swimLanes: Array<{ title: string; contents: SwimLaneContent[] }>,
+  ) => {
+    swimLanes.forEach((s) => {
+      if (Array.isArray(s.contents)) {
+        this.connectToJsPlumb(s.contents)
+      }
     })
   }
 
   componentDidMount() {
-    const { swimLanes } = this.props
-    const connectToJsPlumb = this.connectToJsPlumb
     // @ts-ignore
-    jsPlumb.ready(function () {
-      if (Array.isArray(swimLanes)) {
-        swimLanes.forEach((s) => {
-          if (Array.isArray(s.contents)) {
-            connectToJsPlumb(s.contents)
-          }
-        })
-      }
+    this.jsPlumb = jsPlumb
+    const { swimLanes } = this.props
+    const initSwimLanes = this.initSwimLanes
+    this.jsPlumb.ready(function () {
+      if (Array.isArray(swimLanes)) initSwimLanes(swimLanes)
     })
 
-    // @ts-ignore
-    jsPlumb.bind('click', function (conn, originalEvent) {
-      // @ts-ignore
-      if (window.prompt('输入1删除连接') === '1') jsPlumb.deleteConnection(conn)
+    this.jsPlumb.bind('click', (conn: any, originalEvent: any) => {
+      if (window.prompt('输入1删除连接') === '1') {
+        this.jsPlumb.deleteConnection(conn)
+      }
     })
+  }
+
+  componentDidUpdate() {
+    const { swimLanes } = this.props
+    if (Array.isArray(swimLanes)) this.initSwimLanes(swimLanes)
   }
 
   render() {
