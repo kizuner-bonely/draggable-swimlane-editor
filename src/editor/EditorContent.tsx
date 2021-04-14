@@ -1,5 +1,6 @@
 import { PureComponent } from 'react'
 import { Droppable, Draggable } from 'react-beautiful-dnd'
+import { Alert } from 'antd'
 import styles from './editor.module.less'
 
 type listType = {
@@ -12,6 +13,16 @@ interface IProps {
   lists: ListsProps
 }
 
+function Notice() {
+  return (
+    <div>
+      <h2>注意</h2>
+      <p>
+        1.将菜单栏节点拖入泳道图中时，如果拖到了连线中间连线将不会断，需要手动断开
+      </p>
+    </div>
+  )
+}
 export default class EditorContent extends PureComponent<IProps> {
   render() {
     const { lists } = this.props
@@ -19,6 +30,7 @@ export default class EditorContent extends PureComponent<IProps> {
     return (
       <>
         <div className={styles['editor-content']}>
+          <Alert message={<Notice />} />
           <div className={styles.lists}>
             {lists.map((l) => (
               <div key={l.title} className={styles.list}>
