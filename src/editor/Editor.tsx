@@ -147,13 +147,13 @@ class Editor extends PureComponent<EditorProps> {
   }
 
   render() {
-    const { menu, swimLanes, removeList } = this.props
+    const { menu, swimLanes } = this.props
 
     return (
       <div className={styles.editor}>
         <DragDropContext onDragEnd={this.onDragEnd}>
           <EditorMenu menu={menu as MenuProps[]} />
-          <EditorContent lists={swimLanes as any} removeList={removeList} />
+          <EditorContent lists={swimLanes as any} />
         </DragDropContext>
       </div>
     )
@@ -166,7 +166,6 @@ const mapStateToProps = (state: RootState) => ({
 })
 
 const mapDispatchToProps = (dispatch: RootDispatch) => ({
-  removeList: dispatch.swimLanes.remove,
   updateList: dispatch.swimLanes.update,
 })
 
