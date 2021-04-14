@@ -22,7 +22,7 @@
 
 ============= 2 =============
 
-注意本项目中有三个比较显著的数据结构声明
+注意本项目中有三个比较重要的数据结构声明
 
 ```ts
 // src/store/models/swimLanes.ts
@@ -55,12 +55,16 @@ interface DroppableType {
 
 ## 项目涉及的技术栈文档/教程
 
+============= 1 =============
+
 **react-beautiful-dnd**
 
 该技术栈实现的是拖拽功能
 
 * https://egghead.io/lessons/react-customize-screen-reader-messages-for-drag-and-drop-with-react-beautiful-dnd
 * https://codesandbox.io/s/ql08j35j3q?file=/index.js
+
+============= 2 =============
 
 **jsplumb**
 
@@ -69,6 +73,8 @@ interface DroppableType {
 虽然该技术栈提供了让组件进行拖拽的能力，但是从综合的业务场景来看还是交给 react-beautiful-dnd 比较合适
 
 * https://github.com/wangduanduan/jsplumb-chinese-tutorial#11-%E4%BB%80%E4%B9%88%E6%98%AFjsplumb
+
+============= 3 =============
 
 **@rematch/core**
 
