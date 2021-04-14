@@ -22,7 +22,7 @@ const reorder = (
   list: SwimLaneContent[],
   startIndex: number,
   endIndex: number,
-): SwimLaneContent[] => {
+) => {
   const res = [...list]
   const [removed] = res.splice(startIndex, 1)
   res.splice(endIndex, 0, removed)
@@ -36,8 +36,8 @@ const copy = (
   droppableSource: SwimLaneType,
   droppableDestination: SwimLaneType,
 ) => {
-  const sourceClone = Array.from(source)
-  const destClone = Array.from(destination)
+  const sourceClone = [...source]
+  const destClone = [...destination]
   const item = sourceClone[droppableSource.index]
 
   destClone.splice(droppableDestination.index, 0, { ...item })
@@ -101,27 +101,38 @@ class Editor extends PureComponent<EditorProps> {
     }
   }
 
+  connectToJsPlumb = (list: SwimLaneContent[]) => {
+    list.forEach((i) => {
+      //todo 这里应该根据节点类型添加连接点
+      // @ts-ignore
+      jsPlumb.addEndpoint(`${i.uid}`, { anchors: ['Right'] }, common)
+      // @ts-ignore
+      jsPlumb.addEndpoint(`${i.uid}`, { anchors: ['Left'] }, common)
+      // @ts-ignore
+      jsPlumb.addEndpoint(`${i.uid}`, { anchors: ['Top'] }, common)
+      // @ts-ignore
+      jsPlumb.addEndpoint(`${i.uid}`, { anchors: ['Bottom'] }, common)
+    })
+  }
+
   componentDidMount() {
     const { swimLanes } = this.props
-    // console.log('swimLanes', swimLanes)
+    const connectToJsPlumb = this.connectToJsPlumb
     // @ts-ignore
     jsPlumb.ready(function () {
       if (Array.isArray(swimLanes)) {
         swimLanes.forEach((s) => {
           if (Array.isArray(s.contents)) {
-            s.contents.forEach((c: SwimLaneContent) => {
-              // @ts-ignore
-              jsPlumb.addEndpoint(`${c.uid}`, { anchors: ['Right'] }, common)
-              // @ts-ignore
-              jsPlumb.addEndpoint(`${c.uid}`, { anchors: ['Left'] }, common)
-              // @ts-ignore
-              jsPlumb.addEndpoint(`${c.uid}`, { anchors: ['Top'] }, common)
-              // @ts-ignore
-              jsPlumb.addEndpoint(`${c.uid}`, { anchors: ['Bottom'] }, common)
-            })
+            connectToJsPlumb(s.contents)
           }
         })
       }
+    })
+
+    // @ts-ignore
+    jsPlumb.bind('click', function (conn, originalEvent) {
+      // @ts-ignore
+      if (window.prompt('输入1删除连接') === '1') jsPlumb.deleteConnection(conn)
     })
   }
 
