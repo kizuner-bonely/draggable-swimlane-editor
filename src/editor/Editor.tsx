@@ -12,7 +12,7 @@ import 'jsplumb'
 type EditorProps = ReturnType<typeof mapStateToProps> &
   ReturnType<typeof mapDispatchToProps>
 
-interface SwimLaneType {
+interface DroppableType {
   droppableId: string
   index: number
 }
@@ -33,8 +33,8 @@ const reorder = (
 const copy = (
   source: SwimLaneContent[],
   destination: SwimLaneContent[],
-  droppableSource: SwimLaneType,
-  droppableDestination: SwimLaneType,
+  droppableSource: DroppableType,
+  droppableDestination: DroppableType,
 ) => {
   const sourceClone = [...source]
   const destClone = [...destination]
@@ -49,8 +49,8 @@ const copy = (
 const move = (
   source: SwimLaneContent[],
   destination: SwimLaneContent[],
-  droppableSource: SwimLaneType,
-  droppableDestination: SwimLaneType,
+  droppableSource: DroppableType,
+  droppableDestination: DroppableType,
 ) => {
   const sourceClone = [...source]
   const destinationClone = [...destination]
