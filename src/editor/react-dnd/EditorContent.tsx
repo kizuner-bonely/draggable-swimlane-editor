@@ -1,12 +1,13 @@
 import { PureComponent, useCallback } from 'react'
 import { Form, Input, Modal } from 'antd'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
+import { SwimLaneContent } from '@/store/models/swimLanes'
 import { CloseOutlined } from '@ant-design/icons'
 import styles from './editor.module.less'
 
 type listType = {
   title: string
-  contents: Array<{ id: string; uid: number; content: string }>
+  contents: Array<SwimLaneContent>
 }
 export type ListsProps = Array<listType>
 

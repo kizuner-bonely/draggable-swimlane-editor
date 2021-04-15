@@ -3,6 +3,7 @@ import EditorMenu from './EditorMenu'
 import EditorContent from './EditorContent'
 import { useCallback } from 'react'
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
+import { SwimLaneContent } from '@/store/models/swimLanes'
 import { connect } from 'react-redux'
 import { RootDispatch, RootState } from '@/store/store'
 import styles from './editor.module.less'
@@ -15,15 +16,9 @@ interface SwimLaneType {
   index: number
 }
 
-interface SwimLaneContentType {
-  id: string
-  uid: number
-  content: string
-}
-
 //* 重置列表元素顺序
 const reorder = (
-  list: SwimLaneContentType[],
+  list: SwimLaneContent[],
   startIndex: number,
   endIndex: number,
 ) => {
@@ -35,8 +30,8 @@ const reorder = (
 
 //* 将元素移到另一列表中
 const move = (
-  source: SwimLaneContentType[],
-  destination: SwimLaneContentType[],
+  source: SwimLaneContent[],
+  destination: SwimLaneContent[],
   droppableSource: SwimLaneType,
   droppableDestination: SwimLaneType,
 ) => {
