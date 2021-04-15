@@ -1,7 +1,10 @@
+type directions = 'Top' | 'Bottom' | 'Left' | 'Right'
+
 export interface SwimLaneContent {
   id: string
   uid: number
   content: string
+  connects: Array<{ from: directions; to: directions }>
 }
 
 interface SwimLaneType {
@@ -18,11 +21,13 @@ const model = {
           id: '1',
           uid: 1618386001344,
           content: 'aaa',
+          connects: [],
         },
         {
           id: '2',
           uid: 1618386001345,
           content: 'bbb',
+          connects: [],
         },
       ],
     },
@@ -33,11 +38,13 @@ const model = {
           id: '1',
           uid: 1618386001346,
           content: 'testA',
+          connects: [],
         },
         {
           id: '2',
           uid: 1618386001347,
           content: 'testB',
+          connects: [],
         },
       ],
     },

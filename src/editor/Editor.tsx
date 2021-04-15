@@ -17,6 +17,16 @@ interface DroppableType {
   index: number
 }
 
+interface ConnectionType {
+  sourceId: string
+  targetId: string
+  sourceEndPoint: { [key: string]: any }
+  targetEndPoint: { [key: string]: any }
+  source: { [key: string]: any }
+  target: { [key: string]: any }
+  connection: { [key: string]: any }
+}
+
 //* 重置列表元素顺序
 const reorder = (
   list: SwimLaneContent[],
@@ -139,6 +149,14 @@ class Editor extends PureComponent<EditorProps> {
         this.jsPlumb.deleteConnection(conn)
       }
     })
+
+    this.jsPlumb.bind(
+      'connection',
+      (info: ConnectionType, originalEvent: any) => {
+        console.log(info)
+        const { sourceId, targetId, sourceEndPoint, targetEndPoint } = info
+      },
+    )
   }
 
   componentDidUpdate() {

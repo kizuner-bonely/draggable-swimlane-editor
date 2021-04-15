@@ -1,6 +1,6 @@
 import { PureComponent } from 'react'
 import { Droppable, Draggable } from 'react-beautiful-dnd'
-import { Alert } from 'antd'
+import { Alert, Space, Button } from 'antd'
 import styles from './editor.module.less'
 
 type listType = {
@@ -24,13 +24,24 @@ function Notice() {
   )
 }
 export default class EditorContent extends PureComponent<IProps> {
+  handleGenerate = () => {
+    const { lists } = this.props
+    console.log(lists)
+  }
+
   render() {
     const { lists } = this.props
-
     return (
       <>
         <div className={styles['editor-content']}>
-          <Alert message={<Notice />} />
+          <Alert message={<Notice />} style={{ width: '100%' }} />
+          <div className={styles['action-box']}>
+            <Space>
+              <Button type="primary" onClick={this.handleGenerate}>
+                生成
+              </Button>
+            </Space>
+          </div>
           <div className={styles.lists}>
             {lists.map((l) => (
               <div key={l.title} className={styles.list}>
