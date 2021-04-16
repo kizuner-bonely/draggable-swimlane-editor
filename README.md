@@ -2,6 +2,34 @@
 
 该编辑器通过元素节点的拖拽和连线生成泳道图数据
 
+泳道图的数据结构
+
+```ts
+type directions = 'Top' | 'Bottom' | 'Left' | 'Right'
+
+interface Connection {
+  target: string;	// 目标节点的uid
+  sourcePoint: directions;
+  targetPoint: directions;
+}
+
+interface Node {
+  id: string;
+  uid: number;
+  content: string;
+  connects: Array<Connection>
+}
+
+interface SwimLaneContent {
+  title: string;	// 泳道的名称
+  contents: Array<Node>;
+}
+
+type SwimLane = Array<SwimLaneContent>
+```
+
+
+
 ---
 
 ## 功能点备注
@@ -73,6 +101,10 @@ interface DroppableType {
 虽然该技术栈提供了让组件进行拖拽的能力，但是从综合的业务场景来看还是交给 react-beautiful-dnd 比较合适
 
 * https://github.com/wangduanduan/jsplumb-chinese-tutorial#11-%E4%BB%80%E4%B9%88%E6%98%AFjsplumb
+* https://www.cnblogs.com/zzsdream/p/10906219.html
+* https://www.jianshu.com/p/d68a8e61ff2d
+* https://shawchen08.github.io/2019/03/21/jsPlumb-docs/#to-overlays
+* https://www.jianshu.com/p/2e12d1acaabb
 
 ============= 3 =============
 
