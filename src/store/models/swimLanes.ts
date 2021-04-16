@@ -1,15 +1,28 @@
 type directions = 'Top' | 'Bottom' | 'Left' | 'Right'
 
+export interface ConnectionPointType {
+  target: string
+  sourcePoint: directions
+  targetPoint: directions
+}
+
 export interface SwimLaneContent {
   id: string
   uid: number
   content: string
-  connects: Array<{ from: directions; to: directions }>
+  connects: Array<ConnectionPointType>
 }
 
 interface SwimLaneType {
   title: string
   contents: SwimLaneContent[]
+}
+
+interface newNode {
+  uid: string
+  target: string
+  sourcePoint: directions
+  targetPoint: directions
 }
 
 const model = {
@@ -21,7 +34,13 @@ const model = {
           id: '1',
           uid: 1618386001344,
           content: 'aaa',
-          connects: [],
+          connects: [
+            {
+              target: '1618386001345',
+              sourcePoint: 'Right',
+              targetPoint: 'Right',
+            },
+          ],
         },
         {
           id: '2',
@@ -61,6 +80,34 @@ const model = {
         if (v.title === newList.title) return newList
         return v
       })
+    },
+    addConnection(state: SwimLaneType[], node: newNode) {
+      const stateClone = JSON.parse(JSON.stringify(state))
+      let target
+      stateClone.some((l: SwimLaneType) => {
+        // 找出连接的源节点
+        target = l.contents.find((i) => `${i.uid}` === node.uid)
+        // 查重
+        if (target) {
+          const arr = [...target.connects]
+          const flag = arr.some(
+            (c) =>
+              c.target === node.target &&
+              c.sourcePoint === node.sourcePoint &&
+              c.targetPoint === node.targetPoint,
+          )
+          if (!flag) {
+            target.connects.push({
+              target: node.target,
+              sourcePoint: node.sourcePoint,
+              targetPoint: node.targetPoint,
+            })
+          }
+          return true
+        }
+        return false
+      })
+      return stateClone
     },
   },
   effects: {},

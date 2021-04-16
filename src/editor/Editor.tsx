@@ -2,7 +2,7 @@ import { PureComponent } from 'react'
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
 import { connect } from 'react-redux'
 import { RootDispatch, RootState } from '@/store/store'
-import { SwimLaneContent } from '@/store/models/swimLanes'
+import { SwimLaneContent, ConnectionPointType } from '@/store/models/swimLanes'
 import styles from './editor.module.less'
 import EditorMenu, { MenuProps } from './EditorMenu'
 import EditorContent from './EditorContent'
@@ -20,8 +20,8 @@ interface DroppableType {
 interface ConnectionType {
   sourceId: string
   targetId: string
-  sourceEndPoint: { [key: string]: any }
-  targetEndPoint: { [key: string]: any }
+  sourceEndpoint: { [key: string]: any }
+  targetEndpoint: { [key: string]: any }
   source: { [key: string]: any }
   target: { [key: string]: any }
   connection: { [key: string]: any }
@@ -67,6 +67,19 @@ const move = (
   const [removed] = sourceClone.splice(droppableSource.index, 1)
   destinationClone.splice(droppableDestination.index, 0, removed)
   return { sourceClone, destinationClone }
+}
+
+const directionMap = {
+  '0': {
+    '0.5': 'Left',
+  },
+  '0.5': {
+    '0': 'Top',
+    '1': 'Bottom',
+  },
+  '1': {
+    '0.5': 'Right',
+  },
 }
 
 class Editor extends PureComponent<EditorProps> {
@@ -135,10 +148,38 @@ class Editor extends PureComponent<EditorProps> {
     })
   }
 
+  updateConnections = () => {
+    const { swimLanes } = this.props
+    if (Array.isArray(swimLanes)) {
+      swimLanes.forEach((l) => {
+        l.contents.forEach((c: SwimLaneContent) => {
+          c.connects.forEach((p: ConnectionPointType) => {
+            this.jsPlumb.connect({
+              source: `${c.uid}`,
+              target: `${p.target}`,
+              editable: true,
+              anchors: [p.sourcePoint, p.targetPoint],
+              connector: ['Flowchart'],
+              endpoint: 'Blank',
+              EndpointStyle: { outlineStroke: 'transparent' },
+              paintStyle: { strokeWidth: 2, outlineStroke: 'green' },
+              overlays: [
+                [
+                  'Arrow',
+                  { width: 15, height: 15, location: 1, visible: true },
+                ],
+              ],
+            })
+          })
+        })
+      })
+    }
+  }
+
   componentDidMount() {
     // @ts-ignore
     this.jsPlumb = jsPlumb
-    const { swimLanes } = this.props
+    const { swimLanes, addConnection } = this.props
     const initSwimLanes = this.initSwimLanes
     this.jsPlumb.ready(function () {
       if (Array.isArray(swimLanes)) initSwimLanes(swimLanes)
@@ -153,10 +194,23 @@ class Editor extends PureComponent<EditorProps> {
     this.jsPlumb.bind(
       'connection',
       (info: ConnectionType, originalEvent: any) => {
-        console.log(info)
-        const { sourceId, targetId, sourceEndPoint, targetEndPoint } = info
+        const { sourceId, targetId, sourceEndpoint, targetEndpoint } = info
+        const sourceX = sourceEndpoint.anchor.x as keyof typeof directionMap
+        const sourceY = sourceEndpoint.anchor.y as '0' & '0.5' & '1'
+        const targetX = targetEndpoint.anchor.x as keyof typeof directionMap
+        const targetY = targetEndpoint.anchor.y as '0' & '0.5' & '1'
+        addConnection({
+          uid: sourceId,
+          target: targetId,
+          sourcePoint: directionMap[sourceX][sourceY],
+          targetPoint: directionMap[targetX][targetY],
+        })
       },
     )
+
+    setTimeout(() => {
+      this.updateConnections()
+    }, 0)
   }
 
   componentDidUpdate() {
@@ -185,6 +239,7 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = (dispatch: RootDispatch) => ({
   updateList: dispatch.swimLanes.update,
+  addConnection: dispatch.swimLanes.addConnection,
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Editor)
