@@ -119,6 +119,21 @@ const model = {
       })
       return stateClone
     },
+    deleteConnection(
+      state: SwimLaneType[],
+      connection: { sourceId: string; targetId: string },
+    ) {
+      const { sourceId, targetId } = connection
+      const stateClone = JSON.parse(JSON.stringify(state))
+      let source
+      return stateClone.map((s: SwimLaneType) => {
+        source = s.contents.find((c) => `${c.uid}` === sourceId)
+        if (source) {
+          source.connects = source.connects.filter((c) => c.target !== targetId)
+        }
+        return s
+      })
+    },
   },
   effects: {},
 }

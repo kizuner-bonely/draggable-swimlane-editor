@@ -198,7 +198,7 @@ class Editor extends PureComponent<EditorProps> {
   componentDidMount() {
     // @ts-ignore
     this.jsPlumb = jsPlumb
-    const { swimLanes, addConnection } = this.props
+    const { swimLanes, addConnection, deleteConnection } = this.props
     const initSwimLanes = this.initSwimLanes
     this.jsPlumb.ready(function () {
       if (Array.isArray(swimLanes)) initSwimLanes(swimLanes)
@@ -206,6 +206,8 @@ class Editor extends PureComponent<EditorProps> {
 
     this.jsPlumb.bind('click', (conn: any, originalEvent: any) => {
       if (window.prompt('输入1删除连接') === '1') {
+        const { sourceId, targetId } = conn
+        deleteConnection({ sourceId, targetId })
         this.jsPlumb.deleteConnection(conn)
       }
     })
@@ -260,6 +262,7 @@ const mapDispatchToProps = (dispatch: RootDispatch) => ({
   updateList: dispatch.swimLanes.update,
   removeNode: dispatch.swimLanes.removeNode,
   addConnection: dispatch.swimLanes.addConnection,
+  deleteConnection: dispatch.swimLanes.deleteConnection,
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Editor)
