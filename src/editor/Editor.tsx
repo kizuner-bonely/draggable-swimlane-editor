@@ -1,5 +1,9 @@
 import { PureComponent } from 'react'
-import { DragDropContext, DropResult } from 'react-beautiful-dnd'
+import {
+  DragDropContext,
+  DraggableLocation,
+  DropResult,
+} from 'react-beautiful-dnd'
 import { connect } from 'react-redux'
 import { RootDispatch, RootState } from '@/store/store'
 import { SwimLaneContent, ConnectionPointType } from '@/store/models/swimLanes'
@@ -87,11 +91,21 @@ class Editor extends PureComponent<EditorProps> {
 
   onDragEnd = (result: DropResult) => {
     const { source, destination } = result
-    const { swimLanes, updateList, menu } = this.props
-    //* 将可拖拽的组件拉到可拖拽区域以外的地方或者菜单栏时动作无效
-    if (!destination || destination.droppableId === 'menu') return
+    const { swimLanes, menu, updateList, removeNode } = this.props
+    const swimLanesClone = JSON.parse(JSON.stringify(swimLanes))
+    //* 将泳道图中的元素拖到泳道以外的时候删除该元素
+    if (!destination && source.droppableId !== 'menu') {
+      const [removedItem] = swimLanesClone
+        .find((s: { title: string }) => s.title === source.droppableId)
+        .contents.splice(source.index, 1)
+      removeNode(removedItem)
+      return
+    }
+    //* 菜单栏自身的动作无效
+    if (destination!.droppableId === 'menu') return
+
     //* 在当前区域调整顺序
-    if (source.droppableId === destination.droppableId) {
+    if (source.droppableId === destination?.droppableId) {
       const _swimLanes = JSON.parse(JSON.stringify(swimLanes))
       const list = _swimLanes.find(
         (v: { title: string }) => v.title === destination.droppableId,
@@ -104,27 +118,32 @@ class Editor extends PureComponent<EditorProps> {
       const destinationClone = copy(
         menu as any,
         swimLanesClone.find(
-          (v: { title: string }) => v.title === destination.droppableId,
+          (v: { title: string }) => v.title === destination!.droppableId,
         )!.contents,
         source,
-        destination,
+        destination as DraggableLocation,
       )
-      updateList({ title: destination.droppableId, contents: destinationClone })
+      updateList({
+        title: destination!.droppableId,
+        contents: destinationClone,
+      })
     } else {
       //* 将编辑区域的元素拉到其他区域
-      const swimLanesClone = JSON.parse(JSON.stringify(swimLanes))
       const { sourceClone, destinationClone } = move(
         swimLanesClone.find(
           (v: { title: string }) => v.title === source.droppableId,
         )!.contents,
         swimLanesClone.find(
-          (v: { title: string }) => v.title === destination.droppableId,
+          (v: { title: string }) => v.title === destination!.droppableId,
         )!.contents,
         source,
-        destination,
+        destination as DraggableLocation,
       )
       updateList({ title: source.droppableId, contents: sourceClone })
-      updateList({ title: destination.droppableId, contents: destinationClone })
+      updateList({
+        title: destination!.droppableId,
+        contents: destinationClone,
+      })
     }
   }
 
@@ -239,6 +258,7 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = (dispatch: RootDispatch) => ({
   updateList: dispatch.swimLanes.update,
+  removeNode: dispatch.swimLanes.removeNode,
   addConnection: dispatch.swimLanes.addConnection,
 })
 

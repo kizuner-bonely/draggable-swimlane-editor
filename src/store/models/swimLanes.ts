@@ -81,6 +81,16 @@ const model = {
         return v
       })
     },
+    removeNode(state: SwimLaneType[], node: SwimLaneContent): SwimLaneType[] {
+      const stateClone = [...state]
+      return stateClone.map((s) => {
+        s.contents = s.contents.filter((c) => {
+          c.connects = c.connects.filter((c) => c.target !== `${node.uid}`)
+          return c.uid !== node.uid
+        })
+        return s
+      })
+    },
     addConnection(state: SwimLaneType[], node: newNode) {
       const stateClone = JSON.parse(JSON.stringify(state))
       let target
